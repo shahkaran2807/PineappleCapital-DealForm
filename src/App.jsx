@@ -46,7 +46,7 @@ function ChipSelect({ items, selected, onToggle }) {
   )
 }
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001'
+const GOOGLE_SCRIPT_URL = import.meta.env.VITE_GOOGLE_SCRIPT_URL
 
 function App() {
   const [submitted, setSubmitted] = useState(false)
@@ -94,15 +94,14 @@ function App() {
     e.preventDefault()
     setSubmitting(true)
     try {
-      const res = await fetch(`${API_URL}/api/submit`, {
+      const res = await fetch(GOOGLE_SCRIPT_URL, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form)
       })
-      if (res.ok) {
+      const data = await res.json()
+      if (data.result === 'success') {
         setSubmitted(true)
       } else {
-        const data = await res.json()
         alert(data.error || 'Submission failed. Please try again.')
       }
     } catch {
